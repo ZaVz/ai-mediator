@@ -1,0 +1,35 @@
+{
+  "name": "ai-mediator",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": "^22.0.0 || ^24.0.0",
+    "npm": ">=10"
+  },
+  "scripts": {
+    "dev": "next dev --hostname 127.0.0.1",
+    "build": "npm run prisma:generate && next build",
+    "start": "next start",
+    "setup": "npm run prisma:generate && npm run db:init",
+    "typecheck": "tsc --noEmit",
+    "prisma:generate": "node scripts/prisma.mjs generate",
+    "prisma:migrate": "node scripts/prisma.mjs migrate dev",
+    "db:init": "node scripts/prisma.mjs migrate deploy",
+    "test:api": "node --test tests/api.test.mjs"
+  },
+  "dependencies": {
+    "@next/env": "15.5.28",
+    "@prisma/client": "5.22.0",
+    "next": "15.5.28",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "server-only": "0.0.1"
+  },
+  "devDependencies": {
+    "prisma": "5.22.0",
+    "typescript": "^5.6.3",
+    "@types/node": "^22.7.5",
+    "@types/react": "^18.3.11",
+    "@types/react-dom": "^18.3.0"
+  }
+}

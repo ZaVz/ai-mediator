@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Session {
+  id             String    @id @default(cuid())
+  credentialHash String
+  grade          Int
+  mode           String
+  createdAt      DateTime  @default(now())
+  messages       Message[]
+  helpCards      HelpCard[]
+  safetyAlerts   SafetyAlert[]
+}
+
+model SafetyAlert {
+  id              String   @id @default(cuid())
+  sessionId       String?
+  conversationRef String
+  clientMessageId String
+  grade           Int
+  signalsJson     String
+  source          String
+  status          String   @default("unread")
+  createdAt       DateTime @default(now())
+  readAt          DateTime?
+  handledAt       DateTime?
+  session         Session? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+
+  @@unique([conversationRef, clientMessageId])
+  @@index([status, createdAt])
+}
+
+model Message {
+  id              String   @id @default(cuid())
+  sessionId       String
+  role            String
+  content         String
+  clientMessageId String
+  createdAt       DateTime @default(now())
+  session         Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, clientMessageId, role])
+  @@index([sessionId, createdAt])
+}
+
+model HelpCard {
+  id                 String   @id @default(cuid())
+  sessionId          String?
+  grade              Int
+  studentDescription String?
+  feelingsAndNeeds   String?
+  uncertainPoints    String?
+  attempts           String?
+  requestedHelp      String?
+  status             String   @default("pending")
+  submissionId       String   @unique
+  createdAt          DateTime @default(now())
+  submittedAt        DateTime?
+  session            Session? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+
+  @@index([status, submittedAt])
+}
