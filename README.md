@@ -1,5 +1,37 @@
 # AI调解小助手
 
+## 直接发布网页：GitHub Pages 展示版
+
+本仓库新增纯前端展示版，代码在 `static/`，与原 Next.js 后端版独立。Pages 不需要启动 Node 服务或配置数据库；原服务端代码保留，供以后使用。
+
+1. 将本次修改提交并推送到 GitHub 的 `main` 分支。
+2. 在仓库打开 **Settings → Pages → Build and deployment → Source**，选择 **GitHub Actions**。
+3. 打开 **Actions → Deploy browser demo to GitHub Pages**。如首次运行失败或没有自动运行，点击 **Run workflow**，选择 `main`。
+4. 等待部署成功，到 **Settings → Pages** 查看实际网址。对于 `ZaVz/ai-mediator`，通常为 `https://zavz.github.io/ai-mediator/`。
+5. 内置模型：仓库 **Settings → Secrets and variables → Actions → New repository secret**，新增名称 `AI_API_KEY`，值填演示用密钥。`Variables` 中可设置 `AI_BASE_URL` 和 `AI_MODEL`，不设置时默认 DeepSeek 地址与 `deepseek-flash`。然后重新运行 Pages 工作流。页面打开即可聊天，无需访客填写。
+
+本地 `npm run build:pages` 会自动读取 `.env.local` 的模型配置；GitHub 不会读取电脑上的文件，自动部署使用上述仓库 Secrets/Variables。工作流缺少密钥时会失败，避免误把演示回复当成真实模型。仓库中不保存密钥，但构建产物 `dist/config.js` **会公开包含密钥**，访问者可提取；GitHub Secrets 仅保护构建输入，不会使发布后的密钥保密。展示结束后应在模型平台撤销临时密钥，并撤下或重新部署网页。
+
+内置密钥时隐藏模型设置入口并优先使用构建配置，不受旧浏览器配置影响。手动本地构建没有密钥时，仍可进入明确标注的固定回复模式，设置页也可临时填写配置。
+
+模型供应商必须支持来自浏览器的跨域请求（CORS）；网络或跨域限制失败会明确提示，不能保证所有供应商均可用。
+
+**展示范围：** 每位访问者使用自己的配置和本地记录。学生和教师需使用同一浏览器配置、同一网站地址，在两个普通标签页里演示；不同设备、不同浏览器或隐私窗口不会共享。教师页实时读取本地存储变化，不发送邮件或远程通知。教师展示入口没有真实登录保护，不能用作真实学生数据管理系统。清理浏览器数据会丢失记录。
+
+学生安全关注消息只写入本浏览器的收件箱，页面明确说明没有跨设备通知。AI/规则可能误报漏报，有危险必须寻找身边成人。原求助卡内容仍由孩子编辑确认后提交。
+
+本地预览纯前端版（需要先安装依赖；只用于构建和预览，部署后无需电脑运行）：
+
+```bash
+npm ci
+npm run build:pages
+python3 -m http.server 8080 --directory dist
+```
+
+打开 `http://localhost:8080`。`dist/` 为生成文件，不需要提交。下面保留的启动、数据库和后端接口说明只适用于原 Next.js 服务端版；Pages 不运行这些 `/api/*` 接口，也不读取 `.env.local`。
+
+---
+
 面向小学一至六年级的同伴纠纷倾诉与求助网页。先倾听孩子的感受，再按孩子的意愿继续倾诉、想办法或找老师。
 
 - 三个入口：我想说一说、帮我想办法、我想找老师。

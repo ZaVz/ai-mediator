@@ -15,7 +15,8 @@
     "prisma:generate": "node scripts/prisma.mjs generate",
     "prisma:migrate": "node scripts/prisma.mjs migrate dev",
     "db:init": "node scripts/prisma.mjs migrate deploy",
-    "test:api": "node --test tests/api.test.mjs"
+    "test:api": "node --test tests/api.test.mjs",
+    "build:pages": "node scripts/build-pages.mjs"
   },
   "dependencies": {
     "@next/env": "15.5.28",
